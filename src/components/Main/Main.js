@@ -1,19 +1,48 @@
 import React from "react";
 import { PlayingField } from "../PlayingField/PlayingField";
-import { MainStyled, GameName } from "./Main.styled";
+import {
+  MainStyled,
+  GameName,
+  StartScreen,
+  StartButton,
+  Level
+} from "./Main.styled";
 
 export class Main extends React.Component {
   state = {
-    level: 11,
-    widthField: 3,
-    countFields: 25,
-    fieldArray: []
+    level: 2,
+    widthField: 0,
+    countFields: 0,
+    fieldArray: [],
+    gameProcessArray: [],
+    gameProcess: false,
+    isStartGame: false,
+    rightAnswersCount: 0,
+    wrongAnswersCount: 0,
+    reloadGame: false
   };
 
-  componentDidMount() {
-    const { level } = this.state;
+  componentDidUpdate() {
+    const { rightAnswersCount, level, reloadGame } = this.state;
 
-    this.generateRandomArray(level);
+    if (rightAnswersCount === level) {
+      this.setState(prevState => {
+        const nextLevel =
+          prevState.wrongAnswersCount > 0
+            ? prevState.level - prevState.wrongAnswersCount
+            : prevState.level + 1;
+        return {
+          level: nextLevel,
+          rightAnswersCount: 0,
+          wrongAnswersCount: 0,
+          reloadGame: true
+        };
+      });
+    }
+
+    if (reloadGame) {
+      this.handleStartGame();
+    }
   }
 
   randomInteger = num => Math.floor(Math.random() * (num + 1));
@@ -46,9 +75,11 @@ export class Main extends React.Component {
     const numCells = fieldParams.countFields;
 
     let array = [];
+    let emptyArray = [];
 
     for (let i = 0; i < numCells; i++) {
       array.push("");
+      emptyArray.push("");
     }
 
     for (let j = 0; j < level; j++) {
@@ -63,22 +94,88 @@ export class Main extends React.Component {
 
     this.setState({
       fieldArray: array,
+      gameProcessArray: emptyArray,
       widthField: fieldParams.widthField,
       countFields: numCells
     });
   };
 
-  render() {
-    const { fieldArray, widthField } = this.state;
+  handleStartGame = () => {
+    const { level } = this.state;
 
-    if (fieldArray.length === 0) {
-      return null;
+    this.generateRandomArray(level);
+
+    this.setState({
+      isStartGame: true,
+      gameProcess: false,
+      reloadGame: false
+    });
+
+    setTimeout(() => {
+      this.setState({
+        gameProcess: true
+      });
+    }, 3000);
+  };
+
+  handleClickOnItem = id => {
+    const { fieldArray } = this.state;
+
+    const numId = +id.replace("field_", "");
+
+    if (fieldArray[numId] !== "" && fieldArray[numId] !== "x") {
+      this.setState(prevState => {
+        return {
+          gameProcessArray: [
+            ...prevState.gameProcessArray.slice(0, numId),
+            (prevState.gameProcessArray[numId] = "o"),
+            ...prevState.gameProcessArray.slice(numId + 1)
+          ],
+          rightAnswersCount: prevState.rightAnswersCount + 1
+        };
+      });
+    } else {
+      this.setState(prevState => {
+        return {
+          gameProcessArray: [
+            ...prevState.gameProcessArray.slice(0, numId),
+            (prevState.gameProcessArray[numId] = "x"),
+            ...prevState.gameProcessArray.slice(numId + 1)
+          ],
+          wrongAnswersCount: prevState.wrongAnswersCount + 1
+        };
+      });
     }
+  };
+
+  render() {
+    const {
+      fieldArray,
+      widthField,
+      gameProcess,
+      gameProcessArray,
+      isStartGame,
+      level
+    } = this.state;
 
     return (
       <MainStyled>
-        <GameName>Memory training</GameName>
-        <PlayingField fieldArray={fieldArray} widthField={widthField} />
+        <GameName>Тренажер памяти</GameName>
+        {isStartGame ? (
+          <PlayingField
+            hidden={gameProcess}
+            fieldArray={gameProcess ? gameProcessArray : fieldArray}
+            widthField={widthField}
+            onClick={this.handleClickOnItem}
+          />
+        ) : (
+          <StartScreen>
+            <Level>
+              Следующий уровень: <span>{level}</span>
+            </Level>
+            <StartButton onClick={this.handleStartGame}>Старт игры</StartButton>
+          </StartScreen>
+        )}
       </MainStyled>
     );
   }

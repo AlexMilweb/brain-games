@@ -7,6 +7,12 @@ export const PlayingFieldStyled = styled.div`
   padding: 10px;
   background-color: white;
   margin-bottom: auto;
+
+  ${props =>
+    props.hidden &&
+    css`
+      pointer-events: none;
+    `};
 `;
 
 export const FieldContainer = styled.div`
@@ -20,10 +26,17 @@ export const FieldItem = styled.div`
   width: 40px;
   height: 40px;
   box-shadow: inset 0 0 0 1px #777;
+  cursor: pointer;
 
   ${props =>
     props.active &&
     css`
-      background-color: #f4bd27;
+      background-color: #3dfff8;
+    `};
+
+  ${props =>
+    props.isWrong &&
+    css`
+      background-color: #dd3030;
     `};
 `;
