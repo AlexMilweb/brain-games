@@ -12,14 +12,15 @@ export class Main extends React.Component {
   state = {
     level: 2,
     widthField: 0,
-    countFields: 0,
+    numCells: 0,
     fieldArray: [],
     gameProcessArray: [],
     gameProcess: false,
     isStartGame: false,
     rightAnswersCount: 0,
     wrongAnswersCount: 0,
-    reloadGame: false
+    reloadGame: false,
+    fatigueRate: 0
   };
 
   componentDidUpdate() {
@@ -27,15 +28,17 @@ export class Main extends React.Component {
 
     if (rightAnswersCount === level) {
       this.setState(prevState => {
-        const nextLevel =
-          prevState.wrongAnswersCount > 0
-            ? prevState.level - prevState.wrongAnswersCount
-            : prevState.level + 1;
+        const isWrongs = prevState.wrongAnswersCount > 0;
+        const nextLevel = isWrongs
+          ? prevState.level - prevState.fatigueRate
+          : prevState.level + 1;
+
         return {
           level: nextLevel,
           rightAnswersCount: 0,
           wrongAnswersCount: 0,
-          reloadGame: true
+          reloadGame: true,
+          fatigueRate: isWrongs ? prevState.fatigueRate + 1 : 0
         };
       });
     }
@@ -47,39 +50,24 @@ export class Main extends React.Component {
 
   randomInteger = num => Math.floor(Math.random() * (num + 1));
 
-  setFieldParams = () => {
+  getWidthField = () => {
     const { level } = this.state;
+    let widthField;
 
-    if (level < 5) {
-      return {
-        widthField: 3,
-        countFields: 9
-      };
+    for (let i = 2; i * i <= level * 3; i++) {
+      widthField = i;
     }
-    if (level >= 5 && level <= 10) {
-      return {
-        widthField: 4,
-        countFields: 16
-      };
-    }
-    if (level >= 11 && level <= 18) {
-      return {
-        widthField: 5,
-        countFields: 25
-      };
-    }
+    return widthField;
   };
 
   generateRandomArray = level => {
-    const fieldParams = this.setFieldParams();
-    const numCells = fieldParams.countFields;
+    const widthField = this.getWidthField();
+    const numCells = widthField * widthField;
 
     let array = [];
-    let emptyArray = [];
 
     for (let i = 0; i < numCells; i++) {
       array.push("");
-      emptyArray.push("");
     }
 
     for (let j = 0; j < level; j++) {
@@ -94,9 +82,9 @@ export class Main extends React.Component {
 
     this.setState({
       fieldArray: array,
-      gameProcessArray: emptyArray,
-      widthField: fieldParams.widthField,
-      countFields: numCells
+      gameProcessArray: array.slice(),
+      widthField: widthField,
+      numCells: numCells
     });
   };
 
