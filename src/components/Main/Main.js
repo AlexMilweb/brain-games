@@ -5,7 +5,9 @@ import {
   GameName,
   StartScreen,
   StartButton,
-  Level
+  Level,
+  InfoPanel,
+  Header
 } from "./Main.styled";
 
 export class Main extends React.Component {
@@ -22,6 +24,12 @@ export class Main extends React.Component {
     reloadGame: false,
     fatigueRate: 0
   };
+
+  componentDidMount() {
+    this.setState({
+      level: this.getAverageLevel()
+    });
+  }
 
   componentDidUpdate() {
     const { rightAnswersCount, level, reloadGame } = this.state;
@@ -41,12 +49,26 @@ export class Main extends React.Component {
           fatigueRate: isWrongs ? prevState.fatigueRate + 1 : 0
         };
       });
+
+      const statistic = JSON.parse(localStorage.getItem("statistic"));
+      statistic.push(level);
+
+      localStorage.setItem("statistic", JSON.stringify(statistic));
+      this.getAverageLevel();
     }
 
     if (reloadGame) {
       this.handleStartGame();
     }
   }
+
+  getAverageLevel = () => {
+    const statistic = JSON.parse(localStorage.getItem("statistic"));
+    const average = Math.round(
+      statistic.reduce((a, b) => a + b) / statistic.length
+    );
+    return average;
+  };
 
   randomInteger = num => Math.floor(Math.random() * (num + 1));
 
@@ -90,6 +112,10 @@ export class Main extends React.Component {
 
   handleStartGame = () => {
     const { level } = this.state;
+
+    if (!localStorage.getItem("statistic")) {
+      localStorage.setItem("statistic", JSON.stringify([]));
+    }
 
     this.generateRandomArray(level);
 
@@ -143,12 +169,26 @@ export class Main extends React.Component {
       gameProcess,
       gameProcessArray,
       isStartGame,
-      level
+      level,
+      fatigueRate
     } = this.state;
 
     return (
       <MainStyled>
-        <GameName>Тренажер памяти</GameName>
+        <Header>
+          <GameName>Тренажер памяти</GameName>
+          {isStartGame && (
+            <InfoPanel>
+              <Level>
+                Текущий уровень: <span>{level}</span>
+              </Level>
+              <Level>
+                Уровень усталости: <span>{fatigueRate}</span>
+              </Level>
+            </InfoPanel>
+          )}
+        </Header>
+
         {isStartGame ? (
           <PlayingField
             hidden={gameProcess}
@@ -159,7 +199,7 @@ export class Main extends React.Component {
         ) : (
           <StartScreen>
             <Level>
-              Следующий уровень: <span>{level}</span>
+              Средний уровень запоминания ячеек: <span>{level}</span>
             </Level>
             <StartButton onClick={this.handleStartGame}>Старт игры</StartButton>
           </StartScreen>

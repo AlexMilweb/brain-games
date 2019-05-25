@@ -13,10 +13,14 @@ export const MainStyled = styled.div`
   background-color: #111;
 `;
 
-export const GameName = styled.h1`
+export const Header = styled.header`
   margin-bottom: auto;
+`;
+
+export const GameName = styled.h1`
   color: white;
   font-size: 30px;
+  text-align: center;
 `;
 
 export const StartScreen = styled.div`
@@ -42,12 +46,19 @@ export const StartButton = styled.button`
 
 export const Level = styled.div`
   color: white;
-  text-align: center;
   font-size: 14px;
+  max-width: 200px;
 
   span {
     margin-left: 10px;
     font-size: 18px;
     font-weight: bold;
   }
+`;
+
+export const InfoPanel = styled.div`
+  width: 300px;
+  border-radius: 6px;
+  border: 1px solid #3dfff8;
+  padding: 10px;
 `;

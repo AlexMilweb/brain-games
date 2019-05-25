@@ -31,12 +31,14 @@ export const FieldItem = styled.div`
   ${props =>
     props.active &&
     css`
-      background-color: #3dfff8;
+      background-color: #225af4;
+      box-shadow: inset 0 0 10px 5px #0006bc;
     `};
 
   ${props =>
     props.isWrong &&
     css`
-      background-color: #dd3030;
+      background-color: #ff7c7c;
+      box-shadow: inset 0 0 10px 5px #d60000;
     `};
 `;
