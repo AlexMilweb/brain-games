@@ -26,6 +26,10 @@ export class Main extends React.Component {
   };
 
   componentDidMount() {
+    if (!localStorage.getItem("statistic")) {
+      localStorage.setItem("statistic", JSON.stringify([]));
+    }
+
     this.setState({
       level: this.getAverageLevel()
     });
@@ -64,10 +68,11 @@ export class Main extends React.Component {
 
   getAverageLevel = () => {
     const statistic = JSON.parse(localStorage.getItem("statistic"));
-    const average = Math.round(
-      statistic.reduce((a, b) => a + b) / statistic.length
-    );
-    return average;
+    if (statistic.length < 2) {
+      return 2;
+    } else {
+      return Math.round(statistic.reduce((a, b) => a + b) / statistic.length);
+    }
   };
 
   randomInteger = num => Math.floor(Math.random() * (num + 1));
@@ -112,10 +117,6 @@ export class Main extends React.Component {
 
   handleStartGame = () => {
     const { level } = this.state;
-
-    if (!localStorage.getItem("statistic")) {
-      localStorage.setItem("statistic", JSON.stringify([]));
-    }
 
     this.generateRandomArray(level);
 
