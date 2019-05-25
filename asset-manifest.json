@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/brain-games/static/css/main.34de6062.chunk.css",
-    "main.js": "/brain-games/static/js/main.71204c7e.chunk.js",
-    "main.js.map": "/brain-games/static/js/main.71204c7e.chunk.js.map",
+    "main.js": "/brain-games/static/js/main.44d9ee7c.chunk.js",
+    "main.js.map": "/brain-games/static/js/main.44d9ee7c.chunk.js.map",
     "runtime~main.js": "/brain-games/static/js/runtime~main.0e80d99e.js",
     "runtime~main.js.map": "/brain-games/static/js/runtime~main.0e80d99e.js.map",
     "static/js/2.8f8c908b.chunk.js": "/brain-games/static/js/2.8f8c908b.chunk.js",
     "static/js/2.8f8c908b.chunk.js.map": "/brain-games/static/js/2.8f8c908b.chunk.js.map",
     "index.html": "/brain-games/index.html",
-    "precache-manifest.76eb1ad66d4b649b5f86ace3021af19c.js": "/brain-games/precache-manifest.76eb1ad66d4b649b5f86ace3021af19c.js",
+    "precache-manifest.a78627a6cfb34c75b8c6ad69922c3442.js": "/brain-games/precache-manifest.a78627a6cfb34c75b8c6ad69922c3442.js",
     "service-worker.js": "/brain-games/service-worker.js",
     "static/css/main.34de6062.chunk.css.map": "/brain-games/static/css/main.34de6062.chunk.css.map"
   }
