@@ -41,9 +41,15 @@ export class Main extends React.Component {
     if (rightAnswersCount === level) {
       this.setState(prevState => {
         const isWrongs = prevState.wrongAnswersCount > 0;
-        const nextLevel = isWrongs
-          ? prevState.level - prevState.fatigueRate
-          : prevState.level + 1;
+        const isFatigueRateExceeded =
+          prevState.level - prevState.fatigueRate > 2;
+
+        const nextLevel =
+          isWrongs && isFatigueRateExceeded
+            ? prevState.level - prevState.fatigueRate - 1
+            : isWrongs && !isFatigueRateExceeded
+            ? prevState.level
+            : prevState.level + 1;
 
         return {
           level: nextLevel,
